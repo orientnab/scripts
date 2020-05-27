@@ -6,5 +6,5 @@ jumpToDir() {
     | fzf \
     | sed -e "s|^~|$HOME|")
 
-  [ -z $dirname ] || cd $dirname
+  [ -z $dirname ] || cd $dirname && true
 }
