@@ -6,8 +6,7 @@
 filename=$1
 
 [ -z "$filename" ] \
-  && filename=$(find $HOME \( -path $HOME'/aur' -o -path $HOME'/texmf' \)  -prune \
-  -o -type f -not -path '*/\.*' \
+  && filename=$(fd -E '{aur,texmf}' -t f . $HOME \
   | sed -e "s|^$HOME|~|" \
   | fzf \
   | sed -e "s|^~|$HOME|")
@@ -16,7 +15,7 @@ filename=$1
 
 case "$filename" in
 	*.pdf) setsid "$READER" "$filename" >/dev/null 2>&1 & ;;
-  *.png|*.jpg|*.jpeg) setsid sxiv "$filename" >/dev/null 2>&1 & ;;
+  *.png|*.jpg|*.jpeg|*.gif) setsid sxiv "$filename" >/dev/null 2>&1 & ;;
 	*.html|*.htm) setsid "$BROWSER" "$filename" >/dev/null 2>&1 & ;;
 	*.sent) setsid sent "$filename" >/dev/null 2>&1 & ;;
   *) setsid xdg-open "$filename" >/dev/null 2>&1 & ;;
