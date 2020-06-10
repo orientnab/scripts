@@ -14,9 +14,9 @@ filename=$1
 [ -z $filename ] && exit 1
 
 case "$filename" in
-	*.pdf) setsid "$READER" "$filename" >/dev/null 2>&1 & ;;
-  *.png|*.jpg|*.jpeg|*.gif) setsid sxiv "$filename" >/dev/null 2>&1 & ;;
-	*.html|*.htm) setsid "$BROWSER" "$filename" >/dev/null 2>&1 & ;;
-	*.sent) setsid sent "$filename" >/dev/null 2>&1 & ;;
-  *) setsid xdg-open "$filename" >/dev/null 2>&1 & ;;
+	*.pdf) setsid -f "$READER" "$filename" >/dev/null 2>&1 & ;;
+  *.png|*.jpg|*.jpeg|*.gif) setsid -f sxiv "$filename" >/dev/null 2>&1 & ;;
+	*.html|*.htm) setsid -f "$BROWSER" "$filename" >/dev/null 2>&1 & ;;
+	*.sent) setsid -f sent "$filename" >/dev/null 2>&1 & ;;
+  *) setsid -f xdg-open "$filename" >/dev/null 2>&1 & ;;
 esac
