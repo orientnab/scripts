@@ -1,0 +1,11 @@
+#!/bin/sh
+jumpToDir() {
+  dirname=$(fd -E '{aur,texmf}' -t d . $HOME \
+    | sed -e "s|^$HOME|~|" \
+    | fzf \
+    | sed -e "s|^~|$HOME|")
+
+  [ -z $dirname ] && return 1
+
+  cd $dirname
+}

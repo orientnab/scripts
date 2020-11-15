@@ -1,0 +1,48 @@
+#!/bin/sh
+
+diary(){
+
+  while getopts ":dl" arg; do
+    case $arg in
+      d) # CD to diary folder
+        cd $DIARY
+        return
+        ;;
+      l) # List diaries
+        ls -1 --sort=time --time=creation $DIARY/[0-9]*.md \
+          | grep -o -E "/[0-9]+\.md" \
+          | grep -o -E "[0-9]+"
+        return
+        ;;
+    esac
+  done
+
+  # File name
+  filename=$1
+  if [ -n "$filename" ]; then
+    currentdiary="${DIARY}/${filename}.md"
+  else
+    today=$(date +'%Y%m')
+    alldiaries=$(ls -1 --sort=time --time=creation $DIARY/[0-9]*.md \
+          | grep -o -E "/[0-9]+\.md" \
+          | grep -o -E "[0-9]+")
+    [ $(echo $alldiaries | head -1) -eq $today ] \
+      || alldiaries=$(echo $alldiaries | sed "1 i\\$today")
+
+    chosendiary="$(echo $alldiaries | fzf)"
+    [ -z "$chosendiary" ] && return 1
+    currentdiary="${DIARY}/$chosendiary.md"
+  fi
+
+  # Diary exists
+  [ -f $currentdiary ] \
+    && { $EDITOR $currentdiary && return; }
+
+  # New diary
+  [ -f $currentdiary ] \
+    || { echo "created new diary '${currentdiary}'" \
+    && touch $currentdiary \
+    && $EDITOR $currentdiary \
+    && return; }
+
+}
