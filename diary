@@ -9,9 +9,10 @@ diary(){
         return
         ;;
       l) # List diaries
-        ls -1 --sort=time --time=creation $DIARY/[0-9]*.md \
+        ls -1 $DIARY/[0-9]*.md \
           | grep -o -E "/[0-9]+\.md" \
-          | grep -o -E "[0-9]+"
+          | grep -o -E "[0-9]+" \
+          | sort -r
         return
         ;;
     esac
@@ -23,9 +24,10 @@ diary(){
     currentdiary="${DIARY}/${filename}.md"
   else
     today=$(date +'%Y%m')
-    alldiaries=$(ls -1 --sort=time --time=creation $DIARY/[0-9]*.md \
+    alldiaries=$(ls -1 $DIARY/[0-9]*.md \
           | grep -o -E "/[0-9]+\.md" \
-          | grep -o -E "[0-9]+")
+          | grep -o -E "[0-9]+" \
+          | sort -r)
     [ $(echo $alldiaries | head -1) -eq $today ] \
       || alldiaries=$(echo $alldiaries | sed "1 i\\$today")
 
