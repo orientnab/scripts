@@ -38,13 +38,13 @@ diary(){
 
   # Diary exists
   [ -f $currentdiary ] \
-    && { $EDITOR $currentdiary && return; }
+    && { $EDITOR + $currentdiary && return; }
 
   # New diary
   [ -f $currentdiary ] \
     || { echo "created new diary '${currentdiary}'" \
     && touch $currentdiary \
-    && $EDITOR $currentdiary \
+    && $EDITOR + $currentdiary \
     && return; }
 
 }
