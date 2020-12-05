@@ -2,35 +2,43 @@
 
 diary(){
 
-  while getopts ":dl" arg; do
+  today=$(date +'%Y%m')
+  alldiaries=$(ls -1 $DIARY/[0-9]*.md \
+    | grep -o -E "/[0-9]+\.md" \
+    | grep -o -E "[0-9]+" \
+    | sort -r)
+
+  while getopts ":dls:" arg; do
     case $arg in
       d) # CD to diary folder
         cd $DIARY
         return
         ;;
       l) # List diaries
-        ls -1 $DIARY/[0-9]*.md \
-          | grep -o -E "/[0-9]+\.md" \
-          | grep -o -E "[0-9]+" \
-          | sort -r
+        echo $alldiaries | sort
+        return
+        ;;
+      s) # Search in diaries
+        query=${OPTARG}
+        rg --smart-case $query $(echo $alldiaries | sed "s|$|.md|g" | sed "s|^|\\$DIARY/|g")
         return
         ;;
     esac
   done
 
-  # File name
   filename=$1
+
+  # If filename is provided
   if [ -n "$filename" ]; then
     currentdiary="${DIARY}/${filename}.md"
+
+  # If there's no filename
   else
-    today=$(date +'%Y%m')
-    alldiaries=$(ls -1 $DIARY/[0-9]*.md \
-          | grep -o -E "/[0-9]+\.md" \
-          | grep -o -E "[0-9]+" \
-          | sort -r)
+    # Add this month if it's not in the list
     [ $(echo $alldiaries | head -1) -eq $today ] \
       || alldiaries=$(echo $alldiaries | sed "1 i\\$today")
 
+    # Choose a diary from the list + this month using fzf
     chosendiary="$(echo $alldiaries | fzf)"
     [ -z "$chosendiary" ] && return 1
     currentdiary="${DIARY}/$chosendiary.md"
