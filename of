@@ -1,7 +1,5 @@
 #!/bin/sh
 # [O]pen [F]ile using custom programs
-#
-# TODO: sxiv for images
 
 filename=$1
 
@@ -13,10 +11,11 @@ filename=$1
 
 [ -z $filename ] && exit 1
 
-case "$filename" in
-	*.pdf) setsid -f "$READER" "$filename" >/dev/null 2>&1 & ;;
-  *.png|*.jpg|*.jpeg|*.gif) setsid -f sxiv "$filename" >/dev/null 2>&1 & ;;
-	*.html|*.htm) setsid -f "$BROWSER" "$filename" >/dev/null 2>&1 & ;;
-	*.sent) setsid -f sent "$filename" >/dev/null 2>&1 & ;;
-  *) setsid -f xdg-open "$filename" >/dev/null 2>&1 & ;;
+case $filename in
+    *.pdf) setsid -f "$READER" "$@" >/dev/null 2>&1 & ;;
+    *.png|*.jpg|*.jpeg|*.gif) setsid -f sxiv "$@" >/dev/null 2>&1 & ;;
+    *.svg) setsid -f "$BROWSER" "$@" >/dev/null 2>&1 & ;;
+    *.html|*.htm) setsid -f "$BROWSER" "$@" >/dev/null 2>&1 & ;;
+    *.sent) setsid -f sent "$@" >/dev/null 2>&1 & ;;
+    *) setsid -f xdg-open "$@" >/dev/null 2>&1 & ;;
 esac
