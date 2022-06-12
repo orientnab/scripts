@@ -1,21 +1,26 @@
 #!/bin/sh
 # [O]pen [F]ile using custom programs
 
-filename=$1
+function of_pick_file {
+    case $1 in
+        *.pdf) setsid -f "$READER" "$@" >/dev/null 2>&1 & ;;
+        *.png|*.jpg|*.jpeg|*.gif) setsid -f sxiv "$@" >/dev/null 2>&1 & ;;
+        *.svg) setsid -f "$BROWSER" "$@" >/dev/null 2>&1 & ;;
+        *.html|*.htm) setsid -f "$BROWSER" "$@" >/dev/null 2>&1 & ;;
+        *.sent) setsid -f sent "$@" >/dev/null 2>&1 & ;;
+        *) setsid -f xdg-open "$@" >/dev/null 2>&1 & ;;
+    esac
+}
 
-[ -z "$filename" ] \
+[ -n "$1" ] && of_pick_file $@ && exit 0
+
+[ -z "$1" ] \
   && filename=$(fd -E '{aur,texmf}' -t f . $HOME \
   | sed -e "s|^$HOME|~|" \
   | fzf \
-  | sed -e "s|^~|$HOME|")
+  | sed -e "s|^~|$HOME|") \
 
 [ -z $filename ] && exit 1
 
-case $filename in
-    *.pdf) setsid -f "$READER" "$@" >/dev/null 2>&1 & ;;
-    *.png|*.jpg|*.jpeg|*.gif) setsid -f sxiv "$@" >/dev/null 2>&1 & ;;
-    *.svg) setsid -f "$BROWSER" "$@" >/dev/null 2>&1 & ;;
-    *.html|*.htm) setsid -f "$BROWSER" "$@" >/dev/null 2>&1 & ;;
-    *.sent) setsid -f sent "$@" >/dev/null 2>&1 & ;;
-    *) setsid -f xdg-open "$@" >/dev/null 2>&1 & ;;
-esac
+of_pick_file $filename && exit 0
+
