@@ -1,10 +1,10 @@
 #!/bin/sh
 # [O]pen [F]ile using custom programs
 
-function of_pick_file {
-    case $1 in
+function of_pick_file () {
+    case "$1" in
         *.pdf) setsid -f "$READER" "$@" >/dev/null 2>&1 & ;;
-        *.png|*.jpg|*.jpeg|*.gif) setsid -f sxiv "$@" >/dev/null 2>&1 & ;;
+        *.png|*.jpg|*.jpeg|*.gif|*.ppm) setsid -f sxiv "$@" >/dev/null 2>&1 & ;;
         *.svg) setsid -f "$BROWSER" "$@" >/dev/null 2>&1 & ;;
         *.html|*.htm) setsid -f "$BROWSER" "$@" >/dev/null 2>&1 & ;;
         *.sent) setsid -f sent "$@" >/dev/null 2>&1 & ;;
@@ -12,7 +12,7 @@ function of_pick_file {
     esac
 }
 
-[ -n "$1" ] && of_pick_file $@ && exit 0
+[ -n "$1" ] && of_pick_file "$@" && exit 0
 
 [ -z "$1" ] \
   && filename=$(fd -E '{aur,texmf}' -t f . $HOME \
@@ -20,7 +20,7 @@ function of_pick_file {
   | fzf \
   | sed -e "s|^~|$HOME|") \
 
-[ -z $filename ] && exit 1
+[ -z "$filename" ] && exit 1
 
-of_pick_file $filename && exit 0
+of_pick_file "$filename" && exit 0
 
