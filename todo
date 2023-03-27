@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# 1. remove trailing */
+# 2. insert line break after line number and fix spacing before NOTE|TODO
+# 3. remove line number from additional comments
+# 4. remove remaining lines (not comments, not line number)
+rg --pretty -A 5 -e TODO -e NOTE \
+    | sed -E 's/\s*\*\/\s*//g' \
+    | sed -E 's/(^[^\s]*[0-9]*[^\s]*:)\s*(\/\/|\/\*)\s*/\1\n\/\/ /g' \
+    | sed -E 's/^[^\s]*[0-9]*[^\s]*\-\s*(\/\/|\/\*|\*)\s*/\/\/   /g' \
+    | sed -E '/^[^\s]*[0-9]*[^\s]*\-/d'

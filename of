@@ -4,7 +4,7 @@
 function of_pick_file () {
     case "$1" in
         *.pdf) setsid -f "$READER" "$@" >/dev/null 2>&1 & ;;
-        *.png|*.jpg|*.jpeg|*.gif|*.ppm) setsid -f sxiv "$@" >/dev/null 2>&1 & ;;
+        *.png|*.jpg|*.jpeg|*.gif|*.ppm) setsid -f "$IMAGEVIEWER" "$@" >/dev/null 2>&1 & ;;
         *.svg) setsid -f "$BROWSER" "$@" >/dev/null 2>&1 & ;;
         *.html|*.htm) setsid -f "$BROWSER" "$@" >/dev/null 2>&1 & ;;
         *.sent) setsid -f sent "$@" >/dev/null 2>&1 & ;;
